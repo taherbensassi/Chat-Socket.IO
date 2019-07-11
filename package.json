@@ -2,9 +2,9 @@
   "name": "chat-socket.io",
   "version": "1.0.0",
   "description": "vue js and node js chat ",
-  "main": "app.js",
+  "main": "index.js",
   "scripts": {
-    "start": "./node_modules/nodemon/bin/nodemon.js src/app.js --exec 'npm run lint && node'",
+    "start": "./node_modules/nodemon/bin/nodemon.js index.js --exec 'npm run lint && node'",
     "lint": "./node_modules/.bin/eslint \"**/*.js\""
   },
   "repository": {
@@ -19,7 +19,8 @@
   "homepage": "https://github.com/taherbensassi/Chat-Socket.IO#readme",
   "dependencies": {
     "express": "^4.15.2",
-    "nodemon": "^1.19.1"
+    "nodemon": "^1.19.1",
+    "socket.io": "^2.2.0"
   },
   "devDependencies": {
     "eslint": "^6.0.1"
