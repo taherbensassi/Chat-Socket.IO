@@ -25,10 +25,18 @@ io.on('connection', function(socket){
         socket.broadcast.emit('typing', (data))
     })
 
-
     socket.on('stopTyping',(data)=>{
         socket.broadcast.emit('stopTyping', (data))
     })
+
+    socket.on('joined',(data)=>{
+        socket.broadcast.emit('joined', (data))
+    })
+
+    socket.on('leaved',(data)=>{
+        socket.broadcast.emit('leaved', (data))
+    })
+
 
 });
 

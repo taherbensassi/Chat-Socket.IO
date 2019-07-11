@@ -10,6 +10,11 @@
 <div id="app">
     <div class="container">
         <div class="col-lg-6 offset-lg-3">
+            <div v-if="ready">
+
+                <p v-for="item in info">{{item.name}} {{item.type}}</p>
+
+            </div>
 
             <div v-if="!ready">
                 <h4>Set your name</h4>
@@ -64,6 +69,7 @@
             typing: false,
             name: null,
             ready: false,
+            info: [],
         },
         watch: {
 
@@ -79,11 +85,16 @@
             },
             addName() {
                 this.ready = true
+                socket.emit('joined',this.name)
 
             }
 
         },
         created(){
+            window.onbeforeunload = () => {
+                socket.emit ('leaved',this.name)
+            }
+
             socket.emit('Created','Taher')
             socket.on('Created',(data)=>{
                 console.log(data)
@@ -96,10 +107,24 @@
                 this.typing = true
             })
 
-
             socket.on('stopTyping',()=>{
                 this.typing = false
             })
+
+            socket.on('joined',(data)=>{
+                this.info.push({name:data,type: 'Joined'})
+                setTimeout(() => {
+                        this.info = []
+                },5000)
+            })
+
+            socket.on('leaved',(data)=>{
+                this.info.push({name:data,type: 'Leaved'})
+                setTimeout(() => {
+                    this.info = []
+                },5000)
+            })
+
         }
 
     })
