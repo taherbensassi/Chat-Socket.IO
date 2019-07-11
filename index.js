@@ -37,7 +37,6 @@ io.on('connection', function(socket){
         socket.broadcast.emit('leaved', (data))
     })
 
-
 });
 
 http.listen(3000, function(){

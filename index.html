@@ -3,13 +3,12 @@
 <head>
     <title>Socket.IO chat</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-
 </head>
 <body>
-
 <div id="app">
     <div class="container">
         <div class="col-lg-6 offset-lg-3">
+
             <div v-if="ready">
 
                 <p v-for="item in info">{{item.name}} {{item.type}}</p>
@@ -32,17 +31,18 @@
                         My Chat App
                 </div>
                     <ul class="list-group list-group-flush float-right">
-                        <small v-if="typing" class="text-white" >User typing</small>
+                        <small v-if="typing" class="text-white" >{{typing}} typing</small>
                         <li class="list-group-item" v-for="message in messages">
                             <span :class="{'float-right': message.type === 0}">
+                                 <small>{{message.by}} : </small>
                                  {{ message.message }}
+
+
                             </span>
 
                         </li>
-
                     </ul>
                 <div class="card-body">
-
                      <form @submit.prevent="send">
                         <div class="form-group">
                             <input type="text" class="form-control" v-model="newmessage" aria-describedby="emailHelp" placeholder="Enter your message">
@@ -53,14 +53,10 @@
         </div>
 </div>
 </div>
-
-
 <script src="/socket.io/socket.io.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.10/vue.js"></script>
-
 <script>
     var socket = io();
-
     let app = new Vue ({
         el: '#app',
         data: {
@@ -72,23 +68,20 @@
             info: [],
         },
         watch: {
-
             newmessage(value){
-                value ? socket.emit('typing'):socket.emit('stopTyping')
+                value ? socket.emit('typing',this.name):socket.emit('stopTyping')
             }
         },
         methods: {
             send() {
-                this.messages.push({message:this.newmessage , type: 0 })
-                socket.emit('chat-message',this.newmessage)
+                this.messages.push({message:this.newmessage ,type: 0 ,by: 'ME' })
+                socket.emit('chat-message',{message:this.newmessage,user:this.name})
                 this.newmessage = null
             },
             addName() {
                 this.ready = true
                 socket.emit('joined',this.name)
-
             }
-
         },
         created(){
             window.onbeforeunload = () => {
@@ -100,11 +93,12 @@
                 console.log(data)
             })
             socket.on('chat-message',(data)=>{
-                this.messages.push({message:data , type: 1 })
+                this.messages.push({message:data.message , type: 1,by: data.user })
             })
 
-            socket.on('typing',()=>{
-                this.typing = true
+            socket.on('typing',(name)=>{
+                this.typing = name
+
             })
 
             socket.on('stopTyping',()=>{
@@ -124,11 +118,8 @@
                     this.info = []
                 },5000)
             })
-
         }
-
     })
-
 </script>
 </body>
 </html>
