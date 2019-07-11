@@ -16,6 +16,11 @@ io.on('connection', function(socket){
     socket.on('Created',(data)=>{
         socket.broadcast.emit('Created', (data))
     })
+
+    socket.on('chat-message',(data)=>{
+        socket.broadcast.emit('chat-message', (data))
+    })
+
 });
 
 http.listen(3000, function(){
